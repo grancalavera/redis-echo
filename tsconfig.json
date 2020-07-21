@@ -10,5 +10,5 @@
     "outDir": "build",
     "declaration": true
   },
-  "files": ["src/main.ts"]
+  "files": ["src/consumer.ts", "src/producer.ts"]
 }
