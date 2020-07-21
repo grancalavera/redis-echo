@@ -1,0 +1,20 @@
+{
+  "name": "redis-echo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Leon Coto <leoncoto@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^14.0.24",
+    "@types/redis": "^2.8.25",
+    "nodemon": "^2.0.4",
+    "redis": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "nodemon --watch 'src/**/*.ts' --exec ts-node src/main.ts",
+    "test": "jest"
+  }
+}
