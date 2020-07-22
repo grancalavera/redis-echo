@@ -53,9 +53,3 @@ async function readGroup(consumerName: string, id: string): Promise<void> {
 
   return readGroup(consumerName, id);
 }
-
-async function wait(t: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), t);
-  });
-}
