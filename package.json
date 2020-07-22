@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc",
     "start:script": "nodemon --watch 'src/**/*.ts' --exec ts-node",
-    "start:consumer": "nodemon --watch 'src/**/*.ts' --exec ts-node src/consumer.ts",
-    "start:producer": "nodemon --watch 'src/**/*.ts' --exec ts-node src/producer.ts"
+    "run:consumer": "ts-node src/consumer.ts",
+    "run:producer": "ts-node src/producer.ts"
   }
 }
