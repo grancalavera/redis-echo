@@ -1,17 +1,24 @@
 import r from "ioredis";
-import { RedisStream } from "./redis-type-patch";
+import { RedisStream, RedisMessage } from "./redis-type-patch";
 import * as settings from "./settings";
 const redis = new r();
 import { controlPanel } from "./control-panel";
 
+type NextId = string;
+
 class Consumer {
   private lazy: boolean = false;
+  private nextId: string = "0-0";
 
-  constructor(private name: string) {}
+  constructor(private name: string, private checkBacklog = true) {
+    this.resetNextId();
+  }
 
-  public onToggleLazy(value: boolean): void {
+  public toggleLazy(value: boolean): void {
     if (this.lazy === value) return;
     this.lazy = value;
+    this.resetNextId();
+
     console.log(
       this.lazy
         ? `consumer "${this.name}" is now lazy and will stop acknowledging new messages`
@@ -19,11 +26,36 @@ class Consumer {
     );
   }
 
-  private processMessage(id: string, fields: string[]) {
-    console.log(`[${Date.now()}] ${this.name} read: ${id}, ${fields.join(", ")}`);
+  private resetNextId(): void {
+    this.nextId = this.checkBacklog ? "0-0" : ">";
   }
 
-  public async readFromGroup(id: string): Promise<void> {
+  private async processMessage(id: string, fields: string[]): Promise<void> {
+    console.log(
+      `[${this.lazy ? "ignored" : "acknowledged"}][${Date.now()}] ${
+        this.name
+      } read: ${id}, ${fields.join(", ")}`
+    );
+    if (!this.lazy) {
+      await redis.xack(settings.stream, settings.group, id);
+    }
+  }
+
+  private async processMessages(messages: RedisMessage[]): Promise<NextId> {
+    let id: string = "";
+    for (const item of messages) {
+      const [messageId, messageFields] = item;
+      await this.processMessage(messageId, messageFields);
+      id = messageId;
+    }
+    return id;
+  }
+
+  public async begin(): Promise<void> {
+    return this.readFromGroup();
+  }
+
+  private async readFromGroup(): Promise<void> {
     const result: RedisStream[] | null = (await redis.xreadgroup(
       "GROUP",
       settings.group,
@@ -34,28 +66,22 @@ class Consumer {
       "10",
       "STREAMS",
       settings.stream,
-      id
+      this.nextId
     )) as any;
 
     if (result === null) {
-      console.log("Timeout!");
-      return this.readFromGroup(id);
+      console.log(`Timeout! nextId=${this.nextId}`);
+      return this.readFromGroup();
     }
+
     if (result[0][1].length === 0) {
-      console.log("Backlog empty!");
-      return this.readFromGroup(">");
+      this.nextId = ">";
+      console.log(`Backlog empty! nextId=${this.nextId}`);
+      return this.readFromGroup();
     }
 
-    let nextId: string = id;
-
-    for (const item of result[0][1]) {
-      const [messageId, messageFields] = item;
-      this.processMessage(messageId, messageFields);
-      await redis.xack(settings.stream, settings.group, messageId);
-      nextId = messageId;
-    }
-
-    return this.readFromGroup(nextId);
+    this.nextId = await this.processMessages(result[0][1]);
+    return this.readFromGroup();
   }
 }
 
@@ -72,8 +98,8 @@ async function main() {
   const consumer = new Consumer(consumerName);
 
   controlPanel((value) => {
-    consumer.onToggleLazy(value);
+    consumer.toggleLazy(value);
   });
 
-  consumer.readFromGroup("0-0");
+  consumer.begin();
 }
