@@ -1,8 +1,7 @@
 import http from "http";
 
-export const controlPanel = (onToggleLazy: (value: boolean) => void, port = 9000) => {
+export const controlPanel = (onToggleLazy: (value: boolean) => void, port: number) => {
   let lazy = false;
-  let retries = 0;
 
   const requestListener: http.RequestListener = (req, res) => {
     let body = "";
@@ -34,19 +33,6 @@ export const controlPanel = (onToggleLazy: (value: boolean) => void, port = 9000
   };
 
   const server = http.createServer(requestListener);
-
-  server.on("error", (e: any) => {
-    if (e.code === "EADDRINUSE") {
-      console.error(e.message);
-      retries += 1;
-      const nextPort = retries + port;
-      server.close();
-      console.log(`retry on port ${nextPort}`);
-      server.listen(nextPort, () => {
-        console.log(`listening on port ${nextPort}`);
-      });
-    }
-  });
 
   server.listen(port, () => {
     console.log(`listening on port ${port}`);

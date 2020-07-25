@@ -1,12 +1,14 @@
 import r from "ioredis";
-import { RedisStream, RedisMessage } from "./redis-type-patch";
+import { RedisMessage, RedisStream } from "./redis-type-patch";
 import * as settings from "./settings";
 const redis = new r();
-import { controlPanel } from "./control-panel";
 
 type NextId = string;
 
-class Consumer {
+const BLOCK = 500;
+const COUNT = 1;
+
+export class Consumer {
   private lazy: boolean = false;
   private nextId: string = "0-0";
 
@@ -51,55 +53,42 @@ class Consumer {
     return id;
   }
 
-  public async begin(): Promise<void> {
-    return this.readFromGroup();
+  public begin(): void {
+    this.step();
   }
 
-  private async readFromGroup(): Promise<void> {
+  private async step(): Promise<void> {
+    const messages = await this.read();
+
+    if (messages === null) {
+      console.log(`${Date.now()} Timeout! nextId "${this.nextId}"`);
+      return this.step();
+    }
+
+    if (messages.length === 0) {
+      this.nextId = ">";
+      console.log(`${Date.now()} Backlog empty! nextId "${this.nextId}"`);
+      return this.step();
+    }
+
+    this.nextId = await this.processMessages(messages);
+    return this.step();
+  }
+
+  private async read(): Promise<RedisMessage[] | null> {
     const result: RedisStream[] | null = (await redis.xreadgroup(
       "GROUP",
       settings.group,
       this.name,
       "BLOCK",
-      "2000",
+      BLOCK,
       "COUNT",
-      "10",
+      COUNT,
       "STREAMS",
       settings.stream,
       this.nextId
     )) as any;
 
-    if (result === null) {
-      console.log(`Timeout! nextId=${this.nextId}`);
-      return this.readFromGroup();
-    }
-
-    if (result[0][1].length === 0) {
-      this.nextId = ">";
-      console.log(`Backlog empty! nextId=${this.nextId}`);
-      return this.readFromGroup();
-    }
-
-    this.nextId = await this.processMessages(result[0][1]);
-    return this.readFromGroup();
+    return result === null ? null : result[0][1];
   }
-}
-
-main();
-
-async function main() {
-  const consumerName = process.argv[2] ?? "";
-
-  if (consumerName === "") {
-    console.error("Please specify a consumer name");
-    process.exit(1);
-  }
-
-  const consumer = new Consumer(consumerName);
-
-  controlPanel((value) => {
-    consumer.toggleLazy(value);
-  });
-
-  consumer.begin();
 }
