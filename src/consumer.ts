@@ -2,11 +2,22 @@ import r from "ioredis";
 import { RedisStream } from "./redis-type-patch";
 import * as settings from "./settings";
 const redis = new r();
+import { controlPanel } from "./control-panel";
 
 main();
 
 async function main() {
   const consumerName = process.argv[2] ?? "";
+  let lazy = false;
+
+  controlPanel((value) => {
+    lazy = value;
+    console.log(
+      lazy
+        ? `consumer "${consumerName}" is now lazy and will stop acknowledging new messages`
+        : `consumer "${consumerName}" is not lazy anymore and will resume acknowledging new messages now`
+    );
+  });
 
   if (consumerName === "") {
     console.error("Please specify a consumer name");

@@ -46,10 +46,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^14.0.24":
+"@types/node@npm:*":
   version: 14.0.24
   resolution: "@types/node@npm:14.0.24"
   checksum: b10d6b56faeb7fdf2d2527d7aa685b472adaf810612903d667e364eb53a1ffd2ee0e74f25ab135375c7c3f77400cf05a569d7b8d5eee51cbf7b2f748ec86383d
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^14.0.26":
+  version: 14.0.26
+  resolution: "@types/node@npm:14.0.26"
+  checksum: fe900b9e9441d5c48ca854a5d6680689025767d0a4b6236512bcff44f443e380d1757ca2c6d5e96eac2a4a360be0af446b4d50b8f94348c1942e5cd7865a2499
   languageName: node
   linkType: hard
 
@@ -1512,7 +1519,7 @@ fsevents@~2.1.2:
   resolution: "redis-echo@workspace:."
   dependencies:
     "@types/ioredis": ^4.17.2
-    "@types/node": ^14.0.24
+    "@types/node": ^14.0.26
     ioredis: ^4.17.3
     nodemon: ^2.0.4
     ts-node: ^8.10.2
