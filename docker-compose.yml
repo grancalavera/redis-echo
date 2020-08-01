@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  recho-dev:
+    image: grancalavera/recho-dev:latest
+    volumes:
+      - ./recho-cpanel:/etc/recho/recho-cpanel
+      - ./recho-producer:/etc/recho/recho-producer
