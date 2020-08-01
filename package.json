@@ -6,6 +6,10 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "recho-legacy"
-  ]
+    "recho-cpanel",
+    "recho-producer"
+  ],
+  "scripts": {
+    "begin": "yarn workspaces run start"
+  }
 }
