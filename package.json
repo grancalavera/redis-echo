@@ -10,6 +10,6 @@
     "recho-producer"
   ],
   "scripts": {
-    "start": "yarn workspaces foreach -pit run start"
+    "begin": "yarn workspaces run start"
   }
 }
