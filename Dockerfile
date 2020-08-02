@@ -3,11 +3,10 @@ WORKDIR '/etc/recho'
 
 COPY .yarn/ .yarn/
 COPY .yarnrc.yml .yarnrc.yml
-COPY yarn.lock yarn.lock
 COPY package.json package.json
-COPY recho-cpanel/package.json recho-cpanel/package.json
-COPY recho-producer/package.json recho-producer/package.json
+COPY yarn.lock yarn.lock
 
 RUN yarn
+RUN apk add tree
 
 CMD ["yarn", "start"]
