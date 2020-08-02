@@ -5,19 +5,6 @@ __metadata:
   version: 4
   cacheKey: 5
 
-"@grancalavera/recho-legacy@workspace:recho-legacy":
-  version: 0.0.0-use.local
-  resolution: "@grancalavera/recho-legacy@workspace:recho-legacy"
-  dependencies:
-    "@types/ioredis": ^4.17.2
-    "@types/node": ^14.0.26
-    ioredis: ^4.17.3
-    nodemon: ^2.0.4
-    ts-node: ^8.10.2
-    typescript: ^3.9.7
-  languageName: unknown
-  linkType: soft
-
 "@sindresorhus/is@npm:^0.14.0":
   version: 0.14.0
   resolution: "@sindresorhus/is@npm:0.14.0"
@@ -1530,6 +1517,13 @@ fsevents@~2.1.2:
 "redis-echo@workspace:.":
   version: 0.0.0-use.local
   resolution: "redis-echo@workspace:."
+  dependencies:
+    "@types/ioredis": ^4.17.2
+    "@types/node": ^14.0.26
+    ioredis: ^4.17.3
+    nodemon: ^2.0.4
+    ts-node: ^8.10.2
+    typescript: ^3.9.7
   languageName: unknown
   linkType: soft
 

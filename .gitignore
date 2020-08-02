@@ -18,5 +18,4 @@
 .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/yarn
-
-rechoid
+redis-6.0.6
