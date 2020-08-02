@@ -5,22 +5,9 @@ __metadata:
   version: 4
   cacheKey: 5
 
-"@grancalavera/recho-cpanel@workspace:recho-cpanel":
+"@grancalavera/recho-legacy@workspace:recho-legacy":
   version: 0.0.0-use.local
-  resolution: "@grancalavera/recho-cpanel@workspace:recho-cpanel"
-  dependencies:
-    "@types/ioredis": ^4.17.2
-    "@types/node": ^14.0.26
-    ioredis: ^4.17.3
-    nodemon: ^2.0.4
-    ts-node: ^8.10.2
-    typescript: ^3.9.7
-  languageName: unknown
-  linkType: soft
-
-"@grancalavera/recho-pro@workspace:recho-producer":
-  version: 0.0.0-use.local
-  resolution: "@grancalavera/recho-pro@workspace:recho-producer"
+  resolution: "@grancalavera/recho-legacy@workspace:recho-legacy"
   dependencies:
     "@types/ioredis": ^4.17.2
     "@types/node": ^14.0.26

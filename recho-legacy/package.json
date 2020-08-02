@@ -11,12 +11,12 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "nodemon --watch 'src/**/*.ts' --exec ts-node src/main.ts",
     "start:script": "nodemon --watch 'src/**/*.ts' --exec ts-node",
     "run:consumer": "ts-node src/app-consumer.ts",
     "run:producer": "ts-node src/app-producer.ts",
     "start:consumer": "yarn start:script src/app-consumer.ts",
     "start:consumer:alice": "yarn start:consumer alice 9000",
-    "start:consumer:bob": "yarn start:consumer bob 9001"
+    "start:consumer:bob": "yarn start:consumer bob 9001",
+    "start:producer": "src/app-producer.ts"
   }
 }
